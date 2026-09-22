@@ -38,36 +38,42 @@ window.addEventListener('DOMContentLoaded', event => {
         });
     });
 
-    // Configura aquí las imágenes y los videos de cada proyecto.
-    // Para agregar imágenes, escribe sus rutas dentro del arreglo images.
-    // Ejemplo: 'assets/img/portfolio/5-2.jpg'
     const portfolioProjects = {
         1: {
             images: ['assets/img/portfolio/1.jpg'],
-            videos: []
+            videos: [],
+            links: []
         },
         2: {
             images: ['assets/img/portfolio/2.jpg'],
-            videos: []
+            videos: [],
+            links: []
         },
         3: {
-            images: [],
+            images: ['assets/img/portfolio/3.jpg'],
             videos: [
-                // Reemplaza o agrega tus enlaces de YouTube, Vimeo, Instagram o TikTok.
-                // 'https://www.youtube.com/watch?v=TU_VIDEO'
-            ]
+                'https://www.instagram.com/p/C3A-GePuWY-/',
+                'https://www.instagram.com/p/DP7bpvAAdde/'
+            ],
+            links: []
         },
         4: {
             images: ['assets/img/portfolio/4.jpg'],
-            videos: []
+            videos: [],
+            links: []
         },
         5: {
             images: ['assets/img/portfolio/5.jpg'],
-            videos: []
+            videos: [],
+            links: []
         },
         6: {
             images: ['assets/img/portfolio/6.jpg'],
-            videos: []
+            videos: [],
+            links: [
+                'https://www.instagram.com/p/DQvF2Hskc-Z/?img_index=1',
+                'https://www.instagram.com/p/DXMt2IYDkj9/?img_index=1'
+            ]
         }
     };
 
@@ -100,7 +106,22 @@ window.addEventListener('DOMContentLoaded', event => {
         `;
     };
 
-    // Reemplaza la imagen única de cada modal por una galería configurable.
+    const createExternalLinks = (links, label) => {
+        if (!links.length) return '';
+        return `
+            <div class="portfolio-links text-start mb-4">
+                <h4 class="mb-3">${label}</h4>
+                <div class="list-group">
+                    ${links.map((link, index) => `
+                        <a class="list-group-item list-group-item-action" href="${link}" target="_blank" rel="noopener noreferrer">
+                            <i class="fas fa-link me-2"></i>${label} ${index + 1}
+                        </a>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    };
+
     Object.entries(portfolioProjects).forEach(([modalNumber, project]) => {
         const modal = document.getElementById(`portfolioModal${modalNumber}`);
         if (!modal) return;
@@ -114,11 +135,11 @@ window.addEventListener('DOMContentLoaded', event => {
         const intro = modalBody.querySelector('.item-intro');
         const gallery = createGallery(project.images, modalNumber);
         const videos = createVideoLinks(project.videos);
-        if (intro) intro.insertAdjacentHTML('afterend', gallery + videos);
-        else modalBody.insertAdjacentHTML('afterbegin', gallery + videos);
+        const links = createExternalLinks(project.links, project.videos.length ? 'Más contenidos' : 'Fotos de referencia');
+        if (intro) intro.insertAdjacentHTML('afterend', gallery + videos + links);
+        else modalBody.insertAdjacentHTML('afterbegin', gallery + videos + links);
     });
 
-    // Make every service card open its detail modal.
     const services = [
         {
             title: 'Redes Sociales',
@@ -200,7 +221,7 @@ window.addEventListener('DOMContentLoaded', event => {
         .service-card-clickable { cursor: pointer; transition: transform .2s ease, opacity .2s ease; }
         .service-card-clickable:hover, .service-card-clickable:focus-visible { transform: translateY(-5px); opacity: .85; outline: none; }
         .portfolio-gallery-image { width: 100%; height: 230px; object-fit: cover; }
-        .portfolio-videos .list-group-item { text-align: left; }
+        .portfolio-videos .list-group-item, .portfolio-links .list-group-item { text-align: left; }
     `;
     document.head.appendChild(serviceCardStyle);
 });
