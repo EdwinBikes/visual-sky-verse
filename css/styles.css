@@ -1,14 +1,12 @@
-/* Restaurar los estilos originales de Start Bootstrap Agency.
-   El CSS base contiene la estructura, grid y estilos de los elementos del portafolio.
-   Los estilos del carrusel se mantienen debajo de esta importación. */
 @import url("https://raw.githubusercontent.com/EdwinBikes/visual-sky-verse/9ceaa69a94099ab579b645a5057085e9b7a797d6/css/styles.css");
 
-/* Estilos personalizados para carruseles y modales */
+/* Estilos adicionales solo para proyectos y servicios */
 .portfolio-carousel {
   background: #111827;
   border-radius: 18px;
   overflow: hidden;
   box-shadow: 0 18px 45px rgba(17, 24, 39, 0.18);
+  margin-bottom: 1.5rem;
 }
 
 .portfolio-carousel .carousel-inner {
