@@ -4,8 +4,7 @@
 
 window.addEventListener('DOMContentLoaded', event => {
 
-    // Navbar shrink function
-    var navbarShrink = function () {
+    const navbarShrink = function () {
         const navbarCollapsible = document.body.querySelector('#mainNav');
         if (!navbarCollapsible) return;
         if (window.scrollY === 0) {
@@ -77,15 +76,26 @@ window.addEventListener('DOMContentLoaded', event => {
         }
     };
 
-    const createGallery = (images, modalNumber) => {
+    const createCarousel = (images, modalNumber) => {
         if (!images.length) return '';
+
+        const slides = images.map((image, index) => `
+            <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                <img src="${image}" class="d-block w-100 portfolio-carousel-image" alt="Proyecto ${modalNumber} - imagen ${index + 1}" loading="lazy">
+            </div>
+        `).join('');
+
         return `
-            <div class="portfolio-gallery row g-3 mb-4" aria-label="Imágenes del proyecto">
-                ${images.map((image, imageIndex) => `
-                    <div class="col-sm-${images.length === 1 ? '12' : '6'}">
-                        <img class="img-fluid rounded portfolio-gallery-image" src="${image}" alt="Imagen ${imageIndex + 1} del proyecto ${modalNumber}" loading="lazy" />
-                    </div>
-                `).join('')}
+            <div id="portfolioCarousel${modalNumber}" class="carousel slide portfolio-carousel mb-4" data-bs-ride="carousel" aria-label="Galería del proyecto">
+                <div class="carousel-inner">
+                    ${slides}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#portfolioCarousel${modalNumber}" data-bs-slide="prev" aria-label="Anterior">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#portfolioCarousel${modalNumber}" data-bs-slide="next" aria-label="Siguiente">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                </button>
             </div>
         `;
     };
@@ -133,7 +143,7 @@ window.addEventListener('DOMContentLoaded', event => {
         if (originalImage) originalImage.remove();
 
         const intro = modalBody.querySelector('.item-intro');
-        const gallery = createGallery(project.images, modalNumber);
+        const gallery = createCarousel(project.images, modalNumber);
         const videos = createVideoLinks(project.videos);
         const links = createExternalLinks(project.links, project.videos.length ? 'Más contenidos' : 'Fotos de referencia');
         if (intro) intro.insertAdjacentHTML('afterend', gallery + videos + links);
@@ -203,7 +213,7 @@ window.addEventListener('DOMContentLoaded', event => {
         const details = service.details.map(([label, value]) => `<li><strong>${label}:</strong> ${value}</li>`).join('');
         document.body.insertAdjacentHTML('beforeend', `
             <div class="portfolio-modal modal fade" id="serviceModal${index + 1}" tabindex="-1" aria-labelledby="serviceModal${index + 1}Title" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+                <div class="modal-dialog modal-dialog-centered"><div class="modal-content custom-service-modal">
                     <div class="close-modal" data-bs-dismiss="modal" aria-label="Cerrar ventana"><img src="assets/img/close-icon.svg" alt="Cerrar modal" /></div>
                     <div class="container"><div class="row justify-content-center"><div class="col-lg-10"><div class="modal-body">
                         <h2 class="text-uppercase" id="serviceModal${index + 1}Title">${service.title}</h2>
@@ -216,12 +226,18 @@ window.addEventListener('DOMContentLoaded', event => {
         `);
     });
 
-    const serviceCardStyle = document.createElement('style');
-    serviceCardStyle.textContent = `
+    const cardStyle = document.createElement('style');
+    cardStyle.textContent = `
         .service-card-clickable { cursor: pointer; transition: transform .2s ease, opacity .2s ease; }
         .service-card-clickable:hover, .service-card-clickable:focus-visible { transform: translateY(-5px); opacity: .85; outline: none; }
-        .portfolio-gallery-image { width: 100%; height: 230px; object-fit: cover; }
+        .portfolio-carousel { border-radius: 18px; overflow: hidden; border: 1px solid rgba(255,255,255,.12); box-shadow: 0 12px 30px rgba(17, 24, 39, 0.18); }
+        .portfolio-carousel-image { width: 100%; height: 340px; object-fit: cover; }
         .portfolio-videos .list-group-item, .portfolio-links .list-group-item { text-align: left; }
+        .portfolio-modal .modal-content { border: none; border-radius: 24px; }
+        .portfolio-modal .modal-body { padding: 2rem 1.5rem 1.5rem; }
+        .custom-service-modal { background: linear-gradient(180deg, #fff 0%, #fffaf0 100%); }
+        .portfolio-modal .carousel-control-prev, .portfolio-modal .carousel-control-next { width: 52px; } 
+        .portfolio-modal .carousel-control-prev-icon, .portfolio-modal .carousel-control-next-icon { filter: drop-shadow(0 2px 10px rgba(0,0,0,.35)); }
     `;
-    document.head.appendChild(serviceCardStyle);
+    document.head.appendChild(cardStyle);
 });
